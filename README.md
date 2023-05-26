@@ -1,9 +1,6 @@
 <h1>Decoder extension</h1>
 <h2>*WIP*</h2>
-This is an example extension to help you organise and build you own.
-
-Try to include an image
-<img src="https://i.imgur.com/9i4xcQB.png">
+This is an extension to help you get decoded invoices and lnurls. 
 
 <h2>If your extension has API endpoints, include useful ones here</h2>
 
