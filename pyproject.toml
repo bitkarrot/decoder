@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "lnbits-example"
-version = "0.0.0"
-description = "LNbits utils for extension developers"
-authors = ["Alan Bits <alan@lnbits.com>"]
+name = "decoder"
+version = "0.0.1"
+description = "LNbits decoder extension"
+authors = ["Bitkarrot <info@bitkarrot.co>"]
 
 [tool.poetry.dependencies]
 python = "^3.10 | ^3.9 | ^3.8 | ^3.7"
-lnbits = "^0.10.3"
+# lnbits = "^0.10.3"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"
