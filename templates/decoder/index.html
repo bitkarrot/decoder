@@ -90,28 +90,6 @@
             LNbits.utils.notifyApiError(error) // Error will be passed to the frontend
           })
       },
-      initWs: async function () {
-        if (location.protocol !== 'http:') {
-          localUrl =
-            'wss://' +
-            document.domain +
-            ':' +
-            location.port +
-            '/api/v1/ws/32872r23g29'
-        } else {
-          localUrl =
-            'ws://' +
-            document.domain +
-            ':' +
-            location.port +
-            '/api/v1/ws/32872r23g29'
-        }
-        this.ws = new WebSocket(localUrl)
-        this.ws.addEventListener('message', async ({ data }) => {
-          const res = data.toString()
-          document.getElementById('text-to-change').innerHTML = res
-        })
-      },
       sendThingDialog() {
         console.log(this.thingDialog)
       }
@@ -120,7 +98,6 @@
     created: function () {
       self = this // Often used to run a real object, rather than the event (all a bit confusing really)
       self.decoderFunction('lorum')
-      self.initWs()
     }
   })
 </script>
