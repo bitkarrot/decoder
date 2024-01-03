@@ -1,8 +1,8 @@
 <h1>Decoder extension</h1>
 <h2>*Work In Progress*</h2>
-This is an extension to help you get decoded invoices and lnurls. 
+This is an extension to help decode invoices, lnurls and lightning addresses in LNBits
 
-## get started 
+## Get Started 
 
 Mininum poetry version has is ^1.2, but it is recommended to use latest poetry. (including OSX)
 
