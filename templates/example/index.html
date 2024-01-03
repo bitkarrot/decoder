@@ -126,10 +126,10 @@
 
                   <code class="bg-grey-3 text-black">views.py</code> is used for
                   setting application routes:
-                  <img src="./static/fastapi-example.png" /><br /><br />
+                  <img src="./static/fastapi-decoder.png" /><br /><br />
                   <code class="bg-grey-3 text-black">views_api.py</code> is used
                   for setting application API endpoints:<br />
-                  <img src="./static/fastapi-example2.png" />
+                  <img src="./static/fastapi-decoder2.png" />
                 </q-tab-panel>
 
                 <q-tab-panel name="quasar" class="text-body1">
@@ -148,11 +148,11 @@
                   <i>
                     <strong>TIP:</strong> Look through
                     <code class="bg-grey-3 text-black">/template</code> files in
-                    other extensions for examples of Quasar elements being used. </i
+                    other extensions for decoders of Quasar elements being used. </i
                   ><br /><br />
 
                   <p>
-                    In the below example we make a dialogue popup box (box can
+                    In the below decoder we make a dialogue popup box (box can
                     be triggered
                     <q-btn
                       size="sm"
@@ -161,7 +161,7 @@
                       >here</q-btn
                     >): <q-tooltip>Exmple of a tooltip!</q-tooltip>
                   </p>
-                  <img src="./static/quasar-example.png" /><br /><br />
+                  <img src="./static/quasar-decoder.png" /><br /><br />
                   <div class="text-h6">Useful links:</div>
                   <q-btn
                     color="primary"
@@ -199,9 +199,9 @@
                     components.
                   </p>
 
-                  <p>Typical example of Vue components in a frontend script:</p>
+                  <p>Typical decoder of Vue components in a frontend script:</p>
                   <img
-                    src="./static/script-example.png"
+                    src="./static/script-decoder.png"
                     style="max-width: 800px"
                   /><br /><br />
 
@@ -210,7 +210,7 @@
                     <code class="bg-grey-3 text-black">v-if</code>:
                   </p>
                   <img
-                    src="./static/vif-example.png"
+                    src="./static/vif-decoder.png"
                     style="max-width: 800px"
                   />
                 </q-tab-panel>
@@ -255,20 +255,20 @@
                     >, that streams rates from 6 different sources.
                   </p>
                   Exchange rate API:<br />
-                  <img src="./static/conversion-example.png" /><br /><br />
+                  <img src="./static/conversion-decoder.png" /><br /><br />
                   Exchange rate functions, included using
                   <code class="bg-grey-3 text-black"
                     >from lnbits.utils.exchange_rates import
                     fiat_amount_as_satoshis</code
                   >:<br />
-                  <img src="./static/conversion-example2.png" />
+                  <img src="./static/conversion-decoder2.png" />
                 </q-tab-panel>
                 <q-tab-panel name="qrcodes" class="text-body1">
                   <div class="text-h5 q-mb-md">QR Codes</div>
                   <p>
                     For most purposes use Quasar's inbuilt VueQrcode library:
                   </p>
-                  <img src="./static/qrcode-example1.png" />
+                  <img src="./static/qrcode-decoder1.png" />
                   <p>
                     LNbits does also include a handy
                     <a
@@ -286,7 +286,7 @@
                     %}/api/v1/qrcode/some-data-you-want-in-a-qrcode:</a
                   ><br />
                   <br />
-                  <img src="./static/qrcode-example.png" />
+                  <img src="./static/qrcode-decoder.png" />
                   <br />
                   <img
                     class="bg-white"
@@ -338,7 +338,7 @@
                     >
                     <br />
                     Function used in this demo:<br />
-                    <img src="./static/websocket-example.png" /></p
+                    <img src="./static/websocket-decoder.png" /></p
                 ></q-tab-panel>
 
                 {% endraw %}
@@ -391,7 +391,7 @@
         },
         someBool: true,
         splitterModel: 20,
-        exampleData: [],
+        decoderData: [],
         tab: 'frameworks',
         framworktab: 'fastapi',
         usefultab: 'magicalg'
@@ -399,16 +399,16 @@
     },
     ///// Where functions live /////
     methods: {
-      exampleFunction: function (data) {
+      decoderFunction: function (data) {
         var theData = data
         LNbits.api
           .request(
             'GET', // Type of request
-            '/example/api/v1/test/' + theData, // URL of the endpoint
+            '/decoder/api/v1/test/' + theData, // URL of the endpoint
             this.g.user.wallets[0].inkey // Often endpoints require a key
           )
           .then(response => {
-            this.exampleData = response.data.map(someMapObject) // Often whats returned is mapped onto some model
+            this.decoderData = response.data.map(someMapObject) // Often whats returned is mapped onto some model
           })
           .catch(error => {
             LNbits.utils.notifyApiError(error) // Error will be passed to the frontend
@@ -443,7 +443,7 @@
     ///// To run on startup /////
     created: function () {
       self = this // Often used to run a real object, rather than the event (all a bit confusing really)
-      self.exampleFunction('lorum')
+      self.decoderFunction('lorum')
       self.initWs()
     }
   })
