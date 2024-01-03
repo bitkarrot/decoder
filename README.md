@@ -1,5 +1,5 @@
 <h1>Decoder extension</h1>
-<h2>*WIP*</h2>
+<h2>*Work In Progress*</h2>
 This is an extension to help you get decoded invoices and lnurls. 
 
 ## get started 
