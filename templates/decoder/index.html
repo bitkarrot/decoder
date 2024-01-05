@@ -34,7 +34,7 @@
 
     <q-card>
       <q-card-section>
-        <div>test {{ decoderData }}</div>
+        <div>test {% raw %} {{ decoderData }} {% endraw %}</div>
       </q-card-section>
     </q-card>
 
@@ -98,7 +98,7 @@
     },  
     data: function () {
       return {
-        decoderData: '123234234',
+        decoderData: 'asdfafasfs',
         invoice: '',
         tasks: [
         {
