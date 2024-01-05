@@ -34,18 +34,12 @@
 
     <q-card>
       <q-card-section>
-        <div>test {% raw %} {{ decoderData }} {% endraw %}</div>
-      </q-card-section>
-    </q-card>
-
-    <q-card>
-      <q-card-section>
         <p>
           <b>Decoded Data</b><br />
         </p>
+        <div>{% raw %} {{ decoderData }} {% endraw %}</div>
       </q-card-section>
     </q-card>
-
     
     <q-card>       
       <q-table
@@ -98,40 +92,53 @@
     },  
     data: function () {
       return {
-        decoderData: 'asdfafasfs',
+        decoderData: [],
         invoice: '',
         tasks: [
         {
-          title: "field one", 
-          amount: "100", 
+          Key: "field one", 
+          Value: "100", 
           
         },
         {
-          title: "field two",
-          amount: "200"
+          Key: "field two",
+          Value: "200"
         }],
       }
     },
     ///// Where functions live /////
     methods: {
       sendFormData() { 
-        var info = this.decoderFunction(this.invoice)
+        var info = this.decoderFunction({"data": this.invoice})
       },
       
       decoderFunction: function (data) {
         var theData = data
+        // console.log("data: ", theData)
         LNbits.api
           .request(
-            'GET', 
-            '/decoder/api/v1/test/' + theData, 
-            this.g.user.wallets[0].inkey 
+            'POST', 
+            '/api/v1/payments/decode' , 
+            this.g.user.wallets[0].inkey,
+            data
           )
           .then(response => {
+
             console.log("response: ", response.data)
-            this.decoderData = response.data    
-            console.log("decoder: ", this.decoderData)      
-            // response.data.map(someMapObject) 
-            // Often whats returned is mapped onto some model
+            this.decoderData = response.data
+            // const arrayFromObject = Object.entries(response.data);
+            // console.log("array object", arrayFromObject)
+
+            console.log("")
+            const responseObject = response.data;
+            const arrayFromResponse = Object.entries(responseObject).map(([key, value]) => ({
+              title: key,
+              amount: value.toString()
+            }));            
+            console.log(arrayFromResponse);
+            this.tasks = arrayFromResponse
+            
+
           })
           .catch(error => {
             LNbits.utils.notifyApiError(error) // Error will be passed to the frontend
