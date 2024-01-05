@@ -4,7 +4,7 @@
 <div class="row q-col-gutter-md">
   <div class="col-12 col-md-7 q-gutter-y-md">
     <q-card flat>
-  <q-card-section>
+    <q-card-section>
     <div class="row items-center no-wrap q-mb-sm">
       <div class="col">
         <strong>
@@ -15,12 +15,47 @@
     </div>
     <div class="row items-center no-wrap q-mb-sm">
       <div class="col">
-        <q-input filled dense clearable placeholder="Enter Invoice...." class="q-mb-md">
+        <q-form @submit="sendFormData" class="q-gutter-md">
+        <q-input 
+          filled 
+          dense 
+          clearable 
+          placeholder="Enter Invoice...." 
+          v-model.trim="invoice" 
+          label="invoice"
+          class="q-mb-md">
         </q-input>
-        <q-btn unelevated color="primary" class="" @click="showParseDialog" :label="$t('go')"></q-btn>
+        <q-btn unelevated color="primary" type="submit">Go</q-btn>
+        </q-form>
       </div>
     </div>
-  </q-card-section>
+    </q-card-section>
+    </q-card>
+
+    <q-card>
+      <q-card-section>
+        <div>test {{ decoderData }}</div>
+      </q-card-section>
+    </q-card>
+
+    <q-card>
+      <q-card-section>
+        <p>
+          <b>Decoded Data</b><br />
+        </p>
+      </q-card-section>
+    </q-card>
+
+    
+    <q-card>       
+      <q-table
+      :data="tasks"
+      row-key="name"
+      flat
+      dense
+      >
+      </q-table>
+
     </q-card>
   </div>
 
@@ -56,48 +91,56 @@
   new Vue({
     el: '#vue',
     mixins: [windowMixin],
+    computed: {
+      endpoint: function() {
+        return `/decoder/api/v1/settings?usr=${this.g.user.id}`
+      }
+    },  
     data: function () {
       return {
-        ///// Declare models/variables /////
-        protocol: window.location.protocol,
-        location: '//' + window.location.hostname,
-        thingDialog: {
-          show: false,
-          data: {}
+        decoderData: '123234234',
+        invoice: '',
+        tasks: [
+        {
+          title: "field one", 
+          amount: "100", 
+          
         },
-        someBool: true,
-        splitterModel: 20,
-        decoderData: [],
-        tab: 'frameworks',
-        framworktab: 'fastapi',
-        usefultab: 'magicalg'
+        {
+          title: "field two",
+          amount: "200"
+        }],
       }
     },
     ///// Where functions live /////
     methods: {
+      sendFormData() { 
+        var info = this.decoderFunction(this.invoice)
+      },
+      
       decoderFunction: function (data) {
         var theData = data
         LNbits.api
           .request(
-            'GET', // Type of request
-            '/decoder/api/v1/test/' + theData, // URL of the endpoint
-            this.g.user.wallets[0].inkey // Often endpoints require a key
+            'GET', 
+            '/decoder/api/v1/test/' + theData, 
+            this.g.user.wallets[0].inkey 
           )
           .then(response => {
-            this.decoderData = response.data.map(someMapObject) // Often whats returned is mapped onto some model
+            console.log("response: ", response.data)
+            this.decoderData = response.data    
+            console.log("decoder: ", this.decoderData)      
+            // response.data.map(someMapObject) 
+            // Often whats returned is mapped onto some model
           })
           .catch(error => {
             LNbits.utils.notifyApiError(error) // Error will be passed to the frontend
           })
-      },
-      sendThingDialog() {
-        console.log(this.thingDialog)
-      }
+      },      
     },
     ///// To run on startup /////
     created: function () {
-      self = this // Often used to run a real object, rather than the event (all a bit confusing really)
-      self.decoderFunction('lorum')
+      self = this
     }
   })
 </script>
