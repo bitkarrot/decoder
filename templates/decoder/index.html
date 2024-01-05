@@ -126,14 +126,11 @@
 
             console.log("response: ", response.data)
             this.decoderData = response.data
-            // const arrayFromObject = Object.entries(response.data);
-            // console.log("array object", arrayFromObject)
 
-            console.log("")
             const responseObject = response.data;
             const arrayFromResponse = Object.entries(responseObject).map(([key, value]) => ({
-              title: key,
-              amount: value.toString()
+              Key: key,
+              Value: value.toString()
             }));            
             console.log(arrayFromResponse);
             this.tasks = arrayFromResponse
@@ -141,7 +138,7 @@
 
           })
           .catch(error => {
-            LNbits.utils.notifyApiError(error) // Error will be passed to the frontend
+            LNbits.utils.notifyApiError(error) 
           })
       },      
     },
