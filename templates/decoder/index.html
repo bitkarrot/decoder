@@ -37,19 +37,40 @@
         <p>
           <b>Decoded Data</b><br />
         </p>
-        <div>{% raw %} {{ decoderData }} {% endraw %}</div>
+
+        <div style="padding: 10px">
+            <li class="" v-for="(value, key) in decoderData" :key="key">
+              <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
+                <strong>{% raw %} {{ key }} {% endraw %}:</strong>
+                <ul class="nested">
+                  <li v-for="(innerValue, innerKey) in value" :key="innerKey">
+                    <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
+                  </li>
+                </ul>
+              </div>
+              <div v-else style="width: 100%; padding:10px; word-wrap: break-word;" >
+                <strong>{% raw %} {{ key }} {% endraw %}:</strong>
+                {% raw %} {{ value }} {% endraw %} 
+              </div>
+            </li>
+        </div>
+
+        <!-- <div>{% raw %} {{ decoderData }} {% endraw %}</div> -->
+
+        <div>{% raw %} {{ jsonObject }} {% endraw %}</div> 
+
       </q-card-section>
     </q-card>
     
-    <q-card>       
+
+    <q-card> 
       <q-table
       :data="tasks"
-      row-key="name"
+      row-key="Key"
       flat
       dense
       >
       </q-table>
-
     </q-card>
   </div>
 
@@ -92,29 +113,83 @@
     },  
     data: function () {
       return {
-        decoderData: [],
+        decoderData: '',
         invoice: '',
         tasks: [
         {
           Key: "field one", 
-          Value: "100", 
-          
+          Value: "100",           
         },
         {
           Key: "field two",
           Value: "200"
         }],
-      }
+        tableData: [],
+        tableColumns: [
+          {
+            name: 'key',
+            label: 'Key',
+            field: 'key'
+          },
+          {
+            name: 'value',
+            label: 'Value',
+            field: 'value'
+          }
+        ],
+        jsonObject: '',
+      };
     },
-    ///// Where functions live /////
+    mounted() {
+     // this.formatJsonToTable();
+    },
     methods: {
       sendFormData() { 
         var info = this.decoderFunction({"data": this.invoice})
       },
-      
-      decoderFunction: function (data) {
-        var theData = data
-        // console.log("data: ", theData)
+      formatJsonToTable() {
+        this.convertJsonToTable(this.jsonObject);
+        console.log("tableData: ", this.tableData)
+      },
+      convertJsonToTable(data, parentKey = '') {
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            let value = data[key];
+            if (typeof value === 'object' && value !== null) {
+              // Convert Vue observed object to plain JavaScript object             
+              console.log("key: ", key, "value: ", value)
+            }
+            if (typeof value === 'object' && !Array.isArray(value)) {
+              this.convertJsonToTable(value, key);
+            } else {
+              this.tableData.push({
+                key: parentKey ? `${parentKey}.${key}` : key,
+                value: Array.isArray(value.toString()) || typeof value === 'object' ? JSON.stringify(value) : value              
+              });
+              console.log("Table Push: key: ", key, "value: ", value)
+            }
+          }
+        }
+        console.log("final tableData: ", this.tableData)
+      },
+      getLNURLData: async function(url) { 
+        console.log("inside get LNURL Data")
+        try {
+            const response = await fetch(url)
+            console.log("response.ok : ", response.ok)
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            } 
+            const data = await response.json()
+            console.log("LNURL response object: ", data)
+            this.jsonObject = data
+            return data
+          
+          } catch (error){
+            console.error('There was a problem with the fetch operation:', error);
+          }        
+      },
+      decoderFunction: async function (data) {
         LNbits.api
           .request(
             'POST', 
@@ -123,24 +198,36 @@
             data
           )
           .then(response => {
-
-            console.log("response: ", response.data)
+            console.log("decoderFunction response: ", response.data)
             this.decoderData = response.data
 
+            if (this.decoderData.hasOwnProperty("domain")) {
+              console.log("Key 'domain' exists! Is probably a lnurl");
+              let url  = this.decoderData["domain"]
+              console.log("url: ", url)
+              let lnurlResponse = this.getLNURLData(url)
+              console.log("decoder: lnurl response: ", lnurlResponse)
+           } else { 
+              console.log("Key 'domain' does not exists!");
+            }
+
+            // push into a regular table, non recursive
             const responseObject = response.data;
             const arrayFromResponse = Object.entries(responseObject).map(([key, value]) => ({
               Key: key,
               Value: value.toString()
             }));            
-            console.log(arrayFromResponse);
+            // console.log("array from Response", arrayFromResponse);
             this.tasks = arrayFromResponse
-            
-
           })
+
           .catch(error => {
             LNbits.utils.notifyApiError(error) 
           })
-      },      
+      }, 
+      isObject(val) {
+        return val !== null && typeof val === 'object' && !Array.isArray(val);
+      },
     },
     ///// To run on startup /////
     created: function () {
