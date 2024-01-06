@@ -34,10 +34,6 @@
 
     <q-card>
       <q-card-section>
-        <p>
-          <b>Decoded Data</b><br />
-        </p>
-
         <div style="padding: 10px">
             <li class="" v-for="(value, key) in decoderData" :key="key">
               <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
@@ -54,16 +50,15 @@
               </div>
             </li>
         </div>
-
+        
         <!-- <div>{% raw %} {{ decoderData }} {% endraw %}</div> -->
-
         <div>{% raw %} {{ jsonObject }} {% endraw %}</div> 
 
       </q-card-section>
     </q-card>
     
 
-    <q-card> 
+    <!-- <q-card> 
       <q-table
       :data="tasks"
       row-key="Key"
@@ -71,7 +66,9 @@
       dense
       >
       </q-table>
-    </q-card>
+    </q-card> -->
+
+
   </div>
 
   <div class="col-12 col-md-5 q-gutter-y-md">
