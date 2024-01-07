@@ -154,7 +154,7 @@
       sendFormData() { 
         // check if its a ln address first
         let url = this.isValidLNaddress(this.input)
-        console.log('LN address Result: ', url);
+        // console.log('LN address Result: ', url);
 
         if (url !='invalid') { 
           this.lnaddress = this.input
@@ -164,7 +164,7 @@
           this.lnurlData = ''
 
           this.getLNAddressData(url)
-          console.log("LN addressData", this.lnaddressData)
+          // console.log("LN addressData", this.lnaddressData)
 
         } else {  // try lnurl or bolt11 invoice
           var info = this.decoderFunction({"data": this.input})
@@ -176,13 +176,13 @@
         let isValid =  emailRegex.test(address);
 
         if (isValid) {
-          console.log('LN address is valid');        
+          //console.log('LN address is valid');        
           const [name, domain] = address.split('@');
           const url = `https://${domain}/.well-known/lnurlp/${name}`;
-          console.log("url", url)
+          //console.log("url", url)
           return url;  
         } else {
-          console.log('Input is not a LN address');
+          //console.log('Input is not a LN address');
           return 'invalid'
         }
       },
@@ -195,7 +195,7 @@
               throw new Error('Network response was not ok');
             } 
             const data = await response.json()
-            console.log("get ResponseData: ", data)
+            // console.log("get ResponseData: ", data)
             // this.lnurlData = data
             return data
           
@@ -205,11 +205,11 @@
       },
       getLNURLData: async function(data) { 
         this.lnurlData = await this.getResponseData(data)
-        console.log(" lnurl response: ", this.lnurlData)
+        // console.log(" lnurl response: ", this.lnurlData)
       },
       getLNAddressData: async function(data)  {
         this.lnaddressData = await this.getResponseData(data)
-        console.log('ln address response: ', this.lnaddressData)
+        // console.log('ln address response: ', this.lnaddressData)
       },
       decoderFunction: async function (data) {
         LNbits.api
