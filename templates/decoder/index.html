@@ -34,24 +34,32 @@
 
     <q-card>
       <q-card-section>
-        <div style="padding: 10px">
-            <li v-if="invoice">
-              <div style="padding:10px; word-wrap: break-word;">
-                <strong> Invoice:</strong>{% raw %} {{ invoice }}{% endraw %}
-              </div>
-            </li>
-            <li v-if="lnurl">
-              <div style="padding:10px; word-wrap: break-word;">
-                <strong> LNURL:</strong>{% raw %} {{ lnurl }}{% endraw %}
-              </div>
-            </li>
+          <div style="padding: 10px">
+              <li v-if="invoice">
+                <div style="padding:10px; word-wrap: break-word;">
+                  <strong> Invoice:</strong>{% raw %} {{ invoice }}{% endraw %}
+                </div>
+              </li>
+              <li v-if="lnurl">
+                <div style="padding:10px; word-wrap: break-word;">
+                  <strong> LNURL:</strong>{% raw %} {{ lnurl }}{% endraw %}
+                </div>
+              </li>
+              <li v-if="lnaddress">
+                <div style="padding:10px; word-wrap: break-word;">
+                  <strong> Lightning Address:</strong>{% raw %} {{ lnaddress }}{% endraw %}
+                </div>
+              </li>
+          </div>
+
+          <div style="padding: 10px" v-if="Object.keys(decoderData).length > 0">
+            <!-- invoice decoder only content -->
             <li class="" v-for="(value, key) in decoderData" :key="key">
               <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
                 <strong>{% raw %} {{ key }} {% endraw %}:</strong>
                 <ul class="nested">
                   <li v-for="(innerValue, innerKey) in value" :key="innerKey">
                     <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
-
                   </li>
                 </ul>
               </div>
@@ -60,24 +68,42 @@
                 {% raw %} {{ value }} {% endraw %} 
               </div>
             </li>
-        </div>
-        <!-- lnurl content -->
-        <div style="padding: 10px">
-          <li class="" v-for="(value, key) in lnurlData" :key="key">
-            <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
-              <strong>{% raw %} {{ key }} {% endraw %}:</strong>
-              <ul class="nested">
-                <li v-for="(innerValue, innerKey) in value" :key="innerKey">
-                  <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
-                </li>
-              </ul>
+          </div>
+            <!-- lnurl only content -->        
+            <div style="padding: 10px" v-if="Object.keys(lnurlData).length > 0">
+              <li class="" v-for="(value, key) in lnurlData" :key="key">
+                <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
+                  <strong>{% raw %} {{ key }} {% endraw %}:</strong>
+                  <ul class="nested">
+                    <li v-for="(innerValue, innerKey) in value" :key="innerKey">
+                      <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
+                    </li>
+                  </ul>
+                </div>
+                <div v-else style="width: 100%; padding:10px; word-wrap: break-word;" >
+                  <strong>{% raw %} {{ key }} {% endraw %}:</strong>
+                  {% raw %} {{ value }} {% endraw %} 
+                </div>
+              </li>
             </div>
-            <div v-else style="width: 100%; padding:10px; word-wrap: break-word;" >
-              <strong>{% raw %} {{ key }} {% endraw %}:</strong>
-              {% raw %} {{ value }} {% endraw %} 
+            <!-- ln address data only content -->
+            <div style="padding: 10px" v-if="Object.keys(lnaddressData).length > 0">
+              <li class="" v-for="(value, key) in lnaddressData" :key="key">
+                <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
+                  <strong>{% raw %} {{ key }} {% endraw %}:</strong>
+                  <ul class="nested">
+                    <li v-for="(innerValue, innerKey) in value" :key="innerKey">
+                      <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
+                    </li>
+                  </ul>
+                </div>
+                <div v-else style="width: 100%; padding:10px; word-wrap: break-word;" >
+                  <strong>{% raw %} {{ key }} {% endraw %}:</strong>
+                  {% raw %} {{ value }} {% endraw %} 
+                </div>
+              </li>
             </div>
-          </li>
-      </div>
+
       </q-card-section>
     </q-card>
 
@@ -113,21 +139,54 @@
     },  
     data: function () {
       return {
-        decoderData: '',
         input: '',
         invoice: '',
+        decoderData: '',
         lnurl: '', 
-        lnaddress: '',
         lnurlData: '',
+        lnaddress: '',
+        lnaddressData: '',
       };
     },
     mounted() {
     },
     methods: {
       sendFormData() { 
-        var info = this.decoderFunction({"data": this.input})
+        // check if its a ln address first
+        let url = this.isValidLNaddress(this.input)
+        console.log('LN address Result: ', url);
+
+        if (url !='invalid') { 
+          this.lnaddress = this.input
+          this.lnurl = ''
+          this.invoice = ''
+          this.decoderData = ''
+          this.lnurlData = ''
+
+          this.getLNAddressData(url)
+          console.log("LN addressData", this.lnaddressData)
+
+        } else {  // try lnurl or bolt11 invoice
+          var info = this.decoderFunction({"data": this.input})
+        }
       },
-      getLNURLData: async function(url) { 
+     isValidLNaddress: function(address) {
+        // Regular expression for email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let isValid =  emailRegex.test(address);
+
+        if (isValid) {
+          console.log('LN address is valid');        
+          const [name, domain] = address.split('@');
+          const url = `https://${domain}/.well-known/lnurlp/${name}`;
+          console.log("url", url)
+          return url;  
+        } else {
+          console.log('Input is not a LN address');
+          return 'invalid'
+        }
+      },
+      getResponseData: async function(url) { 
         // console.log("inside get LNURL Data")
         try {
             const response = await fetch(url)
@@ -136,16 +195,23 @@
               throw new Error('Network response was not ok');
             } 
             const data = await response.json()
-            // console.log("LNURL response object: ", data)
-            this.lnurlData = data
+            console.log("get ResponseData: ", data)
+            // this.lnurlData = data
             return data
           
           } catch (error){
             console.error('There was a problem with the fetch operation:', error);
           }        
       },
+      getLNURLData: async function(data) { 
+        this.lnurlData = await this.getResponseData(data)
+        console.log(" lnurl response: ", this.lnurlData)
+      },
+      getLNAddressData: async function(data)  {
+        this.lnaddressData = await this.getResponseData(data)
+        console.log('ln address response: ', this.lnaddressData)
+      },
       decoderFunction: async function (data) {
-        // check if its a ln address first
         LNbits.api
           .request(
             'POST', 
@@ -157,15 +223,19 @@
             // console.log("decoderFunction response: ", response.data)
             this.decoderData = response.data
 
+            this.lnaddress = ''
+            this.lnaddressData = ''
+
             if (this.decoderData.hasOwnProperty("domain")) {
+              // Handle LNURL
               // console.log("Key 'domain' exists! Is probably a lnurl");
               this.lnurl = this.input
               this.invoice = ''
               let url  = this.decoderData["domain"]
               // console.log("url: ", url)
-              let lnurlResponse = this.getLNURLData(url)
-              // console.log("decoder: lnurl response: ", lnurlResponse)
-           } else { 
+              this.getLNURLData(url)
+          } else { 
+              // Handle Invoice
               // console.log("Key 'domain' does not exists!");
               this.invoice = this.input
               this.lnurl = ''
