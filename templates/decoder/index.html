@@ -51,24 +51,7 @@
                 </div>
               </li>
           </div>
-
-          <div style="padding: 10px" v-if="Object.keys(decoderData).length > 0">
-            <!-- invoice decoder only content -->
-            <li class="" v-for="(value, key) in decoderData" :key="key">
-              <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
-                <strong>{% raw %} {{ key }} {% endraw %}:</strong>
-                <ul class="nested">
-                  <li v-for="(innerValue, innerKey) in value" :key="innerKey">
-                    <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
-                  </li>
-                </ul>
-              </div>
-              <div v-else style="width: 100%; padding:10px; word-wrap: break-word;" >
-                <strong>{% raw %} {{ key }} {% endraw %}:</strong>
-                {% raw %} {{ value }} {% endraw %} 
-              </div>
-            </li>
-          </div>
+          <div v-if="invoiceData.length >0" v-html="invoiceData"></div>
             <!-- lnurl only content -->        
             <div style="padding: 10px" v-if="Object.keys(lnurlData).length > 0">
               <li class="" v-for="(value, key) in lnurlData" :key="key">
@@ -146,7 +129,9 @@
         lnurlData: '',
         lnaddress: '',
         lnaddressData: '',
-      };
+        //invoiceData: '<ul><li style="word-wrap: break-word;"><strong>currency</strong>: tb</li><li style="word-wrap: break-word;"><strong>amount_msat</strong>: 100000</li><li style="word-wrap: break-word;"><strong>date</strong>: 1704445244</li><li style="word-wrap: break-word;"><strong>signature</strong>: 5db7f1dd76747dc4f7d562f1c2c857c55f1d1d21ccc9996d784cb3545bce118942844d1f07991b0f5e64fc4e65fb9b264693c30637f79799c138b9d7db0e66e6</li><li style="word-wrap: break-word;"><strong>payment_hash</strong>: e4c14a85db066817985c9cdcac76dc4c873039aa2974b7a33d1f93a32335d5c2</li><li style="word-wrap: break-word;"><strong>payment_secret</strong>: 05adfd4de6838ba3da4c507eec8038f0b8c4ae085d34dd41cbf6f8886bbc5803</li><li style="word-wrap: break-word;"><strong>description</strong>: Testnet LNbits</li><li style="word-wrap: break-word;"><strong>features</strong>: <ul><li style="word-wrap: break-word;"><strong>var_onion_optin</strong>: required</li><li style="word-wrap: break-word;"><strong>payment_secret</strong>: required</li><li style="word-wrap: break-word;"><strong>basic_mpp</strong>: supported</li></ul></li><li style="word-wrap: break-word;"><strong>route_hints</strong>: <ul><li style="word-wrap: break-word;"><strong>0</strong>: <ul><li style="word-wrap: break-word;"><strong>0</strong>: <ul><li style="word-wrap: break-word;"><strong>public_key</strong>: 020ec0c6a0c4fe5d8a79928ead294c36234a76f6e0dca896c35413612a3fd8dbf8</li><li style="word-wrap: break-word;"><strong>short_channel_id</strong>: 2474998x29x1</li><li style="word-wrap: break-word;"><strong>base_fee</strong>: 1000</li><li style="word-wrap: break-word;"><strong>ppm_fee</strong>: 1000</li><li style="word-wrap: break-word;"><strong>cltv_expiry_delta</strong>: 80</li></ul></li></ul></li></ul></li><li style="word-wrap: break-word;"><strong>min_final_cltv_expiry</strong>: 10</li><li style="word-wrap: break-word;"><strong>payee</strong>: 03ba00a57cec1cef4873065ad54d0912696274cc53155b29a3b1256720e33a0943</li></ul>',
+        invoiceData: '',
+        };
     },
     mounted() {
     },
@@ -203,13 +188,36 @@
             console.error('There was a problem with the fetch operation:', error);
           }        
       },
+      formatJSONToHTML: async function(jsonData) {
+        console.log("inside formatJSONToHTML")
+        console.log(jsonData)
+        let html = '<ul>';
+        for (const key in jsonData) {
+            html += `<li style="word-wrap: break-word;"><strong>${key}</strong> : `;
+            if (typeof jsonData[key] === 'object') {
+                html += await this.formatJSONToHTML(jsonData[key]);
+            } else{ 
+              html += jsonData[key];
+            }
+            html += '</li>';          
+        }
+        html += '</ul>';
+        console.log("format json to html: ", html)
+        return html;
+      },
       getLNURLData: async function(data) { 
         this.lnurlData = await this.getResponseData(data)
-        // console.log(" lnurl response: ", this.lnurlData)
+        console.log(" lnurl response: ", this.lnurlData)
       },
       getLNAddressData: async function(data)  {
         this.lnaddressData = await this.getResponseData(data)
         // console.log('ln address response: ', this.lnaddressData)
+      },
+      getInvoiceData: async function(data) { 
+        this.invoiceData = await this.formatJSONToHTML(data)
+        // this.invoiceData = '<b> foo bar baz </b>'
+        console.log("getInvoiceData: ", data)
+        console.log("invoice data: ", this.invoiceData)
       },
       decoderFunction: async function (data) {
         LNbits.api
@@ -240,6 +248,9 @@
               this.invoice = this.input
               this.lnurl = ''
               this.lnurlData = ''
+              console.log("response.data: ", response.data)
+              console.log("response.stringify: ", JSON.stringify(response.data))
+              this.getInvoiceData(response.data)
             } 
           })
           .catch(error => {
