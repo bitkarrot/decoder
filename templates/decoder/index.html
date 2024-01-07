@@ -20,9 +20,9 @@
           filled 
           dense 
           clearable 
-          placeholder="Enter Invoice...." 
-          v-model.trim="invoice" 
-          label="invoice"
+          placeholder="Enter Invoice, lnurl or ln address...." 
+          v-model.trim="input" 
+          label="input"
           class="q-mb-md">
         </q-input>
         <q-btn unelevated color="primary" type="submit">Go</q-btn>
@@ -35,6 +35,16 @@
     <q-card>
       <q-card-section>
         <div style="padding: 10px">
+            <li v-if="invoice">
+              <div style="padding:10px; word-wrap: break-word;">
+                <strong> Invoice:</strong>{% raw %} {{ invoice }}{% endraw %}
+              </div>
+            </li>
+            <li v-if="lnurl">
+              <div style="padding:10px; word-wrap: break-word;">
+                <strong> LNURL:</strong>{% raw %} {{ lnurl }}{% endraw %}
+              </div>
+            </li>
             <li class="" v-for="(value, key) in decoderData" :key="key">
               <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
                 <strong>{% raw %} {{ key }} {% endraw %}:</strong>
@@ -50,24 +60,25 @@
               </div>
             </li>
         </div>
-        
-        <!-- <div>{% raw %} {{ decoderData }} {% endraw %}</div> -->
-        <div>{% raw %} {{ jsonObject }} {% endraw %}</div> 
-
+        <!-- lnurl content -->
+        <div style="padding: 10px">
+          <li class="" v-for="(value, key) in jsonObject" :key="key">
+            <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
+              <strong>{% raw %} {{ key }} {% endraw %}:</strong>
+              <ul class="nested">
+                <li v-for="(innerValue, innerKey) in value" :key="innerKey">
+                  <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
+                </li>
+              </ul>
+            </div>
+            <div v-else style="width: 100%; padding:10px; word-wrap: break-word;" >
+              <strong>{% raw %} {{ key }} {% endraw %}:</strong>
+              {% raw %} {{ value }} {% endraw %} 
+            </div>
+          </li>
+      </div>
       </q-card-section>
     </q-card>
-    
-
-    <!-- <q-card> 
-      <q-table
-      :data="tasks"
-      row-key="Key"
-      flat
-      dense
-      >
-      </q-table>
-    </q-card> -->
-
 
   </div>
 
@@ -111,7 +122,10 @@
     data: function () {
       return {
         decoderData: '',
+        input: '',
         invoice: '',
+        lnurl: '', 
+        lnaddress: '',
         tasks: [
         {
           Key: "field one", 
@@ -142,7 +156,7 @@
     },
     methods: {
       sendFormData() { 
-        var info = this.decoderFunction({"data": this.invoice})
+        var info = this.decoderFunction({"data": this.input})
       },
       formatJsonToTable() {
         this.convertJsonToTable(this.jsonObject);
@@ -200,13 +214,20 @@
 
             if (this.decoderData.hasOwnProperty("domain")) {
               console.log("Key 'domain' exists! Is probably a lnurl");
+              this.lnurl = this.input
+              this.invoice = ''
               let url  = this.decoderData["domain"]
               console.log("url: ", url)
               let lnurlResponse = this.getLNURLData(url)
               console.log("decoder: lnurl response: ", lnurlResponse)
            } else { 
               console.log("Key 'domain' does not exists!");
-            }
+              this.invoice = this.input
+              this.lnurl = ''
+              this.jsonObject = ''
+            } 
+
+            // match to ln address
 
             // push into a regular table, non recursive
             const responseObject = response.data;
@@ -216,6 +237,8 @@
             }));            
             // console.log("array from Response", arrayFromResponse);
             this.tasks = arrayFromResponse
+
+
           })
 
           .catch(error => {
