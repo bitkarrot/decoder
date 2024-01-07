@@ -51,6 +51,7 @@
                 <ul class="nested">
                   <li v-for="(innerValue, innerKey) in value" :key="innerKey">
                     <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
+
                   </li>
                 </ul>
               </div>
@@ -62,7 +63,7 @@
         </div>
         <!-- lnurl content -->
         <div style="padding: 10px">
-          <li class="" v-for="(value, key) in jsonObject" :key="key">
+          <li class="" v-for="(value, key) in lnurlData" :key="key">
             <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
               <strong>{% raw %} {{ key }} {% endraw %}:</strong>
               <ul class="nested">
@@ -102,15 +103,6 @@
 {% endblock %} {% block scripts %} {{ window_vars(user) }}
 
 <script>
-  var someMapObject = obj => {
-    obj._data = _.clone(obj)
-    obj.date = Quasar.utils.date.formatDate(
-      new Date(obj.time * 1000),
-      'YYYY-MM-DD HH:mm'
-    )
-    // here you can do something with the mapped data
-    return obj
-  }
   new Vue({
     el: '#vue',
     mixins: [windowMixin],
@@ -126,74 +118,26 @@
         invoice: '',
         lnurl: '', 
         lnaddress: '',
-        tasks: [
-        {
-          Key: "field one", 
-          Value: "100",           
-        },
-        {
-          Key: "field two",
-          Value: "200"
-        }],
-        tableData: [],
-        tableColumns: [
-          {
-            name: 'key',
-            label: 'Key',
-            field: 'key'
-          },
-          {
-            name: 'value',
-            label: 'Value',
-            field: 'value'
-          }
-        ],
-        jsonObject: '',
+        lnurlData: '',
       };
     },
     mounted() {
-     // this.formatJsonToTable();
     },
     methods: {
       sendFormData() { 
         var info = this.decoderFunction({"data": this.input})
       },
-      formatJsonToTable() {
-        this.convertJsonToTable(this.jsonObject);
-        console.log("tableData: ", this.tableData)
-      },
-      convertJsonToTable(data, parentKey = '') {
-        for (const key in data) {
-          if (data.hasOwnProperty(key)) {
-            let value = data[key];
-            if (typeof value === 'object' && value !== null) {
-              // Convert Vue observed object to plain JavaScript object             
-              console.log("key: ", key, "value: ", value)
-            }
-            if (typeof value === 'object' && !Array.isArray(value)) {
-              this.convertJsonToTable(value, key);
-            } else {
-              this.tableData.push({
-                key: parentKey ? `${parentKey}.${key}` : key,
-                value: Array.isArray(value.toString()) || typeof value === 'object' ? JSON.stringify(value) : value              
-              });
-              console.log("Table Push: key: ", key, "value: ", value)
-            }
-          }
-        }
-        console.log("final tableData: ", this.tableData)
-      },
       getLNURLData: async function(url) { 
-        console.log("inside get LNURL Data")
+        // console.log("inside get LNURL Data")
         try {
             const response = await fetch(url)
-            console.log("response.ok : ", response.ok)
+            // console.log("response.ok : ", response.ok)
             if (!response.ok) {
               throw new Error('Network response was not ok');
             } 
             const data = await response.json()
-            console.log("LNURL response object: ", data)
-            this.jsonObject = data
+            // console.log("LNURL response object: ", data)
+            this.lnurlData = data
             return data
           
           } catch (error){
@@ -201,6 +145,7 @@
           }        
       },
       decoderFunction: async function (data) {
+        // check if its a ln address first
         LNbits.api
           .request(
             'POST', 
@@ -209,38 +154,24 @@
             data
           )
           .then(response => {
-            console.log("decoderFunction response: ", response.data)
+            // console.log("decoderFunction response: ", response.data)
             this.decoderData = response.data
 
             if (this.decoderData.hasOwnProperty("domain")) {
-              console.log("Key 'domain' exists! Is probably a lnurl");
+              // console.log("Key 'domain' exists! Is probably a lnurl");
               this.lnurl = this.input
               this.invoice = ''
               let url  = this.decoderData["domain"]
-              console.log("url: ", url)
+              // console.log("url: ", url)
               let lnurlResponse = this.getLNURLData(url)
-              console.log("decoder: lnurl response: ", lnurlResponse)
+              // console.log("decoder: lnurl response: ", lnurlResponse)
            } else { 
-              console.log("Key 'domain' does not exists!");
+              // console.log("Key 'domain' does not exists!");
               this.invoice = this.input
               this.lnurl = ''
-              this.jsonObject = ''
+              this.lnurlData = ''
             } 
-
-            // match to ln address
-
-            // push into a regular table, non recursive
-            const responseObject = response.data;
-            const arrayFromResponse = Object.entries(responseObject).map(([key, value]) => ({
-              Key: key,
-              Value: value.toString()
-            }));            
-            // console.log("array from Response", arrayFromResponse);
-            this.tasks = arrayFromResponse
-
-
           })
-
           .catch(error => {
             LNbits.utils.notifyApiError(error) 
           })
