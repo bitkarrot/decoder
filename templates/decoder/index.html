@@ -33,31 +33,21 @@
     </q-card>
     <q-card>
       <q-card-section>
-          <div>
-            <ul>
-              <li v-if="invoice">
-                <div style="padding: 5px; word-wrap: break-word;">
-                  <strong>Invoice:</strong>{% raw %} {{ invoice }}{% endraw %}
-                </div>
-              </li>
-              <li v-if="lnurl">
-                <div style="padding: 5px; word-wrap: break-word;">
-                  <strong>LNURL:</strong>{% raw %} {{ lnurl }}{% endraw %}
-                </div>
-              </li>
-              <li v-if="lnaddress">
-                <div style="padding: 5px; word-wrap: break-word;">
-                  <strong>Lightning Address:</strong>{% raw %} {{ lnaddress }}{% endraw %}
-                </div>
-              </li>
-            </ul>
-          </div>
+        <div style="word-wrap: break-word;"  v-if="invoice">
+          <strong>Invoice:</strong>{% raw %} {{ invoice }}{% endraw %}
           <!-- invoice data only content -->
-          <div style="padding:5px;" v-if="invoiceData.length > 0" v-html="invoiceData"></div>
-            <!-- lnurl only content -->                    
-          <div style="padding:5px;" v-if="lnurlData.length > 0" v-html="lnurlData"></div>
-            <!-- ln address data only content -->
+          <div v-if="invoiceData.length > 0" v-html="invoiceData"></div>
+        </div>
+        <div style="word-wrap: break-word;" v-if="lnurl">
+          <strong>LNURL:</strong>{% raw %} {{ lnurl }}{% endraw %}
+          <!-- lnurl only content -->                    
+          <div v-if="lnurlData.length > 0" v-html="lnurlData"></div>
+        </div>
+        <div style="word-wrap: break-word;" v-if="lnaddress">
+          <strong>Lightning Address:</strong>{% raw %} {{ lnaddress }}{% endraw %}
+          <!-- ln address data only content -->
           <div v-if="Object.keys(lnaddressData).length > 0" v-html="lnaddressData"></div>
+        </div>
       </q-card-section>
     </q-card>
   </div>
@@ -165,7 +155,7 @@
        // console.log(jsonData)
         let html = '<ul>';
         for (const key in jsonData) {
-            html += `<li style="padding:5px;word-wrap: break-word;"><strong>${key}</strong> : `;
+            html += `<li style="word-wrap: break-word;"><strong>${key}</strong> : `;
             if (typeof jsonData[key] === 'object') {
                 html += await this.formatJSONToHTML(jsonData[key]);          
             } else { 
