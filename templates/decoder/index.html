@@ -141,6 +141,14 @@
     mounted() {
     },
     methods: {
+      blankallFields:  function() {
+        this.invoice = '',
+        this.invoiceData = '',
+        this.lnurl = '', 
+        this.lnurlData = '',
+        this.lnaddress = '',
+        this.lnaddressData = ''
+      },
       sendFormData() { 
         // check if its a ln address first
         let url = this.isValidLNaddress(this.input)
@@ -228,22 +236,17 @@
             // console.log("decoderFunction response: ", response.data)
             this.decoderData = response.data
 
-            this.lnaddress = ''
-            this.lnaddressData = ''
+            this.blankallFields()
 
             if (this.decoderData.hasOwnProperty("domain")) {
               // Handle LNURL
               // console.log("Key 'domain' exists! Is probably a lnurl");
               this.lnurl = this.input
-              this.invoice = ''
               let url  = this.decoderData["domain"]
-              // console.log("url: ", url)
               this.getLNURLData(url)
           } else { 
               // Handle Invoice
               this.invoice = this.input
-              this.lnurl = ''
-              this.lnurlData = ''
               this.getInvoiceData(response.data)
             } 
           })
