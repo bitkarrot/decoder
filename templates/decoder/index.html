@@ -31,7 +31,6 @@
     </div>
     </q-card-section>
     </q-card>
-
     <q-card>
       <q-card-section>
           <div>
@@ -55,47 +54,12 @@
           </div>
           <!-- invoice data only content -->
           <div style="padding:5px;" v-if="invoiceData.length > 0" v-html="invoiceData"></div>
-            <!-- lnurl only content -->        
-            <div v-if="Object.keys(lnurlData).length > 0">
-              <ul>
-              <li v-for="(value, key) in lnurlData" :key="key">
-                <div v-if="isObject(value)" style="padding:5px; word-wrap: break-word;">
-                  <strong>{% raw %} {{ key }} {% endraw %}:</strong>
-                  <ul class="nested">
-                    <li v-for="(innerValue, innerKey) in value" :key="innerKey">
-                      <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
-                    </li>
-                  </ul>
-                </div>
-                <div v-else style="width: 100%; padding:5px; word-wrap: break-word;" >
-                  <strong>{% raw %} {{ key }} {% endraw %}:</strong>
-                  {% raw %} {{ value }} {% endraw %} 
-                </div>
-              </li>
-              </ul>
-            </div>
+            <!-- lnurl only content -->                    
+          <div style="padding:5px;" v-if="lnurlData.length > 0" v-html="lnurlData"></div>
             <!-- ln address data only content -->
-            <div v-if="Object.keys(lnaddressData).length > 0">
-              <ul>
-              <li v-for="(value, key) in lnaddressData" :key="key">
-                <div v-if="isObject(value)" style="padding:5px; word-wrap: break-word;">
-                  <strong>{% raw %} {{ key }} {% endraw %}:</strong>
-                  <ul class="nested">
-                    <li v-for="(innerValue, innerKey) in value" :key="innerKey">
-                      <strong> {% raw %} {{ innerKey }} {% endraw %}:</strong>{% raw %} {{ innerValue }}{% endraw %} 
-                    </li>
-                  </ul>
-                </div>
-                <div v-else style="padding:5px; word-wrap: break-word;" >
-                  <strong>{% raw %} {{ key }} {% endraw %}:</strong>
-                  {% raw %} {{ value }} {% endraw %} 
-                </div>
-              </li>
-            </ul>
-            </div>
+          <div v-if="Object.keys(lnaddressData).length > 0" v-html="lnaddressData"></div>
       </q-card-section>
     </q-card>
-
   </div>
 
   <div class="col-12 col-md-5 q-gutter-y-md">
@@ -155,11 +119,11 @@
 
         if (url !='invalid') { 
           this.lnaddress = this.input
-          this.lnurl = ''
           this.invoice = ''
           this.invoiceData = ''
-          this.decoderData = ''
+          this.lnurl = ''
           this.lnurlData = ''
+          this.decoderData = ''
 
           this.getLNAddressData(url)
 
@@ -196,33 +160,34 @@
           }        
       },
       formatJSONToHTML: async function(jsonData) {
-        console.log("inside formatJSONToHTML")
-        console.log(jsonData)
+       // console.log("inside formatJSONToHTML")
+       // console.log(jsonData)
         let html = '<ul>';
         for (const key in jsonData) {
             html += `<li style="padding:5px;word-wrap: break-word;"><strong>${key}</strong> : `;
             if (typeof jsonData[key] === 'object') {
-                html += await this.formatJSONToHTML(jsonData[key]);
-            } else{ 
+                html += await this.formatJSONToHTML(jsonData[key]);          
+            } else { 
               html += jsonData[key];
             }
             html += '</li>';          
         }
         html += '</ul>';
-        console.log("format json to html: ", html)
+        // console.log("format json to html: ", html)
         return html;
       },
       getLNURLData: async function(data) { 
-        this.lnurlData = await this.getResponseData(data)
-        console.log(" lnurl response: ", this.lnurlData)
+        let response = await this.getResponseData(data)
+        this.lnurlData = await this.formatJSONToHTML(response)
+        //console.log(" lnurl response: ", this.lnurlData)
       },
       getLNAddressData: async function(data)  {
-        this.lnaddressData = await this.getResponseData(data)
+        let response = await this.getResponseData(data)
+        this.lnaddressData = await this.formatJSONToHTML(response)
       },
       getInvoiceData: async function(data) { 
         this.invoiceData = await this.formatJSONToHTML(data)
-        console.log("getInvoiceData: ", data)
-        console.log("invoice data: ", this.invoiceData)
+        //console.log("getInvoiceData: ", this.invoiceData)
       },
       decoderFunction: async function (data) {
         LNbits.api
