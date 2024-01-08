@@ -116,6 +116,7 @@
       sendFormData() { 
         // check if its a ln address first
         let url = this.isValidLNaddress(this.input)
+        // console.log("isValidLNaddress: ", url)
 
         if (url !='invalid') { 
           this.lnaddress = this.input
@@ -178,11 +179,15 @@
       },
       getLNURLData: async function(data) { 
         let response = await this.getResponseData(data)
+        // console.log("getLNURLData: ", response)
         this.lnurlData = await this.formatJSONToHTML(response)
-        //console.log(" lnurl response: ", this.lnurlData)
       },
       getLNAddressData: async function(data)  {
         let response = await this.getResponseData(data)
+        // console.log("getLNAddressData: ", response)
+        if (response === undefined) {
+          return this.lnaddressData = await this.formatJSONToHTML({"error": "Lightning address not valid"})
+        }
         this.lnaddressData = await this.formatJSONToHTML(response)
       },
       getInvoiceData: async function(data) { 
