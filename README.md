@@ -1,6 +1,15 @@
 <h1>Decoder extension</h1>
-<h2>*Work In Progress*</h2>
+
 This is an extension to help decode invoices, lnurls and lightning addresses in LNBits
+
+## Example Usage
+
+Decode a BOLT11 invoice
+
+Decode a LNURL
+
+Decode a Lightning Address
+
 
 ## Get Started 
 
