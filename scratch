@@ -1,0 +1,21 @@
+
+      formatJSONToHTML: function(jsonData) {
+        let html = '<ul>';
+        for (const key in jsonData) {
+          if (jsonData.hasOwnProperty(key)) {
+            html += '<li>';
+            html += `<strong>${key}</strong> : `;
+            if (typeof jsonData[key] === 'object') {
+              // Recursively handle nested objects or arrays
+              html += formatJSONToHTML(jsonData[key]);
+            } else {
+              // Display primitive values
+              html += jsonData[key];
+            }
+            html += '</li>';
+          }
+        }
+        html += '</ul>';
+        console.log("html: ", html)
+        return html;
+      },

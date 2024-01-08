@@ -34,28 +34,32 @@
 
     <q-card>
       <q-card-section>
-          <div style="padding: 10px">
+          <div>
+            <ul>
               <li v-if="invoice">
-                <div style="padding:10px; word-wrap: break-word;">
-                  <strong> Invoice:</strong>{% raw %} {{ invoice }}{% endraw %}
+                <div style="padding: 5px; word-wrap: break-word;">
+                  <strong>Invoice:</strong>{% raw %} {{ invoice }}{% endraw %}
                 </div>
               </li>
               <li v-if="lnurl">
-                <div style="padding:10px; word-wrap: break-word;">
-                  <strong> LNURL:</strong>{% raw %} {{ lnurl }}{% endraw %}
+                <div style="padding: 5px; word-wrap: break-word;">
+                  <strong>LNURL:</strong>{% raw %} {{ lnurl }}{% endraw %}
                 </div>
               </li>
               <li v-if="lnaddress">
-                <div style="padding:10px; word-wrap: break-word;">
-                  <strong> Lightning Address:</strong>{% raw %} {{ lnaddress }}{% endraw %}
+                <div style="padding: 5px; word-wrap: break-word;">
+                  <strong>Lightning Address:</strong>{% raw %} {{ lnaddress }}{% endraw %}
                 </div>
               </li>
+            </ul>
           </div>
-          <div v-if="invoiceData.length >0" v-html="invoiceData"></div>
+          <!-- invoice data only content -->
+          <div style="padding:5px;" v-if="invoiceData.length > 0" v-html="invoiceData"></div>
             <!-- lnurl only content -->        
-            <div style="padding: 10px" v-if="Object.keys(lnurlData).length > 0">
-              <li class="" v-for="(value, key) in lnurlData" :key="key">
-                <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
+            <div v-if="Object.keys(lnurlData).length > 0">
+              <ul>
+              <li v-for="(value, key) in lnurlData" :key="key">
+                <div v-if="isObject(value)" style="padding:5px; word-wrap: break-word;">
                   <strong>{% raw %} {{ key }} {% endraw %}:</strong>
                   <ul class="nested">
                     <li v-for="(innerValue, innerKey) in value" :key="innerKey">
@@ -63,16 +67,18 @@
                     </li>
                   </ul>
                 </div>
-                <div v-else style="width: 100%; padding:10px; word-wrap: break-word;" >
+                <div v-else style="width: 100%; padding:5px; word-wrap: break-word;" >
                   <strong>{% raw %} {{ key }} {% endraw %}:</strong>
                   {% raw %} {{ value }} {% endraw %} 
                 </div>
               </li>
+              </ul>
             </div>
             <!-- ln address data only content -->
-            <div style="padding: 10px" v-if="Object.keys(lnaddressData).length > 0">
-              <li class="" v-for="(value, key) in lnaddressData" :key="key">
-                <div v-if="isObject(value)" style="padding:10px; word-wrap: break-word;">
+            <div v-if="Object.keys(lnaddressData).length > 0">
+              <ul>
+              <li v-for="(value, key) in lnaddressData" :key="key">
+                <div v-if="isObject(value)" style="padding:5px; word-wrap: break-word;">
                   <strong>{% raw %} {{ key }} {% endraw %}:</strong>
                   <ul class="nested">
                     <li v-for="(innerValue, innerKey) in value" :key="innerKey">
@@ -80,13 +86,13 @@
                     </li>
                   </ul>
                 </div>
-                <div v-else style="width: 100%; padding:10px; word-wrap: break-word;" >
+                <div v-else style="padding:5px; word-wrap: break-word;" >
                   <strong>{% raw %} {{ key }} {% endraw %}:</strong>
                   {% raw %} {{ value }} {% endraw %} 
                 </div>
               </li>
+            </ul>
             </div>
-
       </q-card-section>
     </q-card>
 
@@ -129,7 +135,6 @@
         lnurlData: '',
         lnaddress: '',
         lnaddressData: '',
-        //invoiceData: '<ul><li style="word-wrap: break-word;"><strong>currency</strong>: tb</li><li style="word-wrap: break-word;"><strong>amount_msat</strong>: 100000</li><li style="word-wrap: break-word;"><strong>date</strong>: 1704445244</li><li style="word-wrap: break-word;"><strong>signature</strong>: 5db7f1dd76747dc4f7d562f1c2c857c55f1d1d21ccc9996d784cb3545bce118942844d1f07991b0f5e64fc4e65fb9b264693c30637f79799c138b9d7db0e66e6</li><li style="word-wrap: break-word;"><strong>payment_hash</strong>: e4c14a85db066817985c9cdcac76dc4c873039aa2974b7a33d1f93a32335d5c2</li><li style="word-wrap: break-word;"><strong>payment_secret</strong>: 05adfd4de6838ba3da4c507eec8038f0b8c4ae085d34dd41cbf6f8886bbc5803</li><li style="word-wrap: break-word;"><strong>description</strong>: Testnet LNbits</li><li style="word-wrap: break-word;"><strong>features</strong>: <ul><li style="word-wrap: break-word;"><strong>var_onion_optin</strong>: required</li><li style="word-wrap: break-word;"><strong>payment_secret</strong>: required</li><li style="word-wrap: break-word;"><strong>basic_mpp</strong>: supported</li></ul></li><li style="word-wrap: break-word;"><strong>route_hints</strong>: <ul><li style="word-wrap: break-word;"><strong>0</strong>: <ul><li style="word-wrap: break-word;"><strong>0</strong>: <ul><li style="word-wrap: break-word;"><strong>public_key</strong>: 020ec0c6a0c4fe5d8a79928ead294c36234a76f6e0dca896c35413612a3fd8dbf8</li><li style="word-wrap: break-word;"><strong>short_channel_id</strong>: 2474998x29x1</li><li style="word-wrap: break-word;"><strong>base_fee</strong>: 1000</li><li style="word-wrap: break-word;"><strong>ppm_fee</strong>: 1000</li><li style="word-wrap: break-word;"><strong>cltv_expiry_delta</strong>: 80</li></ul></li></ul></li></ul></li><li style="word-wrap: break-word;"><strong>min_final_cltv_expiry</strong>: 10</li><li style="word-wrap: break-word;"><strong>payee</strong>: 03ba00a57cec1cef4873065ad54d0912696274cc53155b29a3b1256720e33a0943</li></ul>',
         invoiceData: '',
         };
     },
@@ -139,24 +144,23 @@
       sendFormData() { 
         // check if its a ln address first
         let url = this.isValidLNaddress(this.input)
-        // console.log('LN address Result: ', url);
 
         if (url !='invalid') { 
           this.lnaddress = this.input
           this.lnurl = ''
           this.invoice = ''
+          this.invoiceData = ''
           this.decoderData = ''
           this.lnurlData = ''
 
           this.getLNAddressData(url)
-          // console.log("LN addressData", this.lnaddressData)
 
         } else {  // try lnurl or bolt11 invoice
           var info = this.decoderFunction({"data": this.input})
         }
       },
      isValidLNaddress: function(address) {
-        // Regular expression for email validation
+        // Use Regular expression for email validation for LN address
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         let isValid =  emailRegex.test(address);
 
@@ -164,7 +168,6 @@
           //console.log('LN address is valid');        
           const [name, domain] = address.split('@');
           const url = `https://${domain}/.well-known/lnurlp/${name}`;
-          //console.log("url", url)
           return url;  
         } else {
           //console.log('Input is not a LN address');
@@ -172,16 +175,12 @@
         }
       },
       getResponseData: async function(url) { 
-        // console.log("inside get LNURL Data")
         try {
             const response = await fetch(url)
-            // console.log("response.ok : ", response.ok)
             if (!response.ok) {
               throw new Error('Network response was not ok');
             } 
             const data = await response.json()
-            // console.log("get ResponseData: ", data)
-            // this.lnurlData = data
             return data
           
           } catch (error){
@@ -193,7 +192,7 @@
         console.log(jsonData)
         let html = '<ul>';
         for (const key in jsonData) {
-            html += `<li style="word-wrap: break-word;"><strong>${key}</strong> : `;
+            html += `<li style="padding:5px;word-wrap: break-word;"><strong>${key}</strong> : `;
             if (typeof jsonData[key] === 'object') {
                 html += await this.formatJSONToHTML(jsonData[key]);
             } else{ 
@@ -211,11 +210,9 @@
       },
       getLNAddressData: async function(data)  {
         this.lnaddressData = await this.getResponseData(data)
-        // console.log('ln address response: ', this.lnaddressData)
       },
       getInvoiceData: async function(data) { 
         this.invoiceData = await this.formatJSONToHTML(data)
-        // this.invoiceData = '<b> foo bar baz </b>'
         console.log("getInvoiceData: ", data)
         console.log("invoice data: ", this.invoiceData)
       },
@@ -244,12 +241,9 @@
               this.getLNURLData(url)
           } else { 
               // Handle Invoice
-              // console.log("Key 'domain' does not exists!");
               this.invoice = this.input
               this.lnurl = ''
               this.lnurlData = ''
-              console.log("response.data: ", response.data)
-              console.log("response.stringify: ", JSON.stringify(response.data))
               this.getInvoiceData(response.data)
             } 
           })
