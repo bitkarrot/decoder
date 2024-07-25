@@ -4,49 +4,53 @@
 <div class="row q-col-gutter-md">
   <div class="col-12 col-md-7 q-gutter-y-md">
     <q-card flat>
-    <q-card-section>
-    <div class="row items-center no-wrap q-mb-sm">
-      <div class="col">
-        <strong>
-          Decode Lightning
-          BOLT11, LNURL, and Lightning Address
-        </strong>
-      </div>
-    </div>
-    <div class="row items-center no-wrap q-mb-sm">
-      <div class="col">
-        <q-form @submit="sendFormData" class="q-gutter-md">
-        <q-input 
-          filled 
-          dense 
-          clearable 
-          placeholder="Enter Invoice, lnurl or ln address...." 
-          v-model.trim="input" 
-          label="input"
-          class="q-mb-md">
-        </q-input>
-        <q-btn unelevated color="primary" type="submit">Go</q-btn>
-        </q-form>
-      </div>
-    </div>
-    </q-card-section>
+      <q-card-section>
+        <div class="row items-center no-wrap q-mb-sm">
+          <div class="col">
+            <strong>
+              Decode Lightning BOLT11, LNURL, and Lightning Address
+            </strong>
+          </div>
+        </div>
+        <div class="row items-center no-wrap q-mb-sm">
+          <div class="col">
+            <q-form @submit="sendFormData" class="q-gutter-md">
+              <q-input
+                filled
+                dense
+                clearable
+                placeholder="Enter Invoice, lnurl or ln address...."
+                v-model.trim="input"
+                label="input"
+                class="q-mb-md"
+              >
+              </q-input>
+              <q-btn unelevated color="primary" type="submit">Go</q-btn>
+            </q-form>
+          </div>
+        </div>
+      </q-card-section>
     </q-card>
     <q-card>
       <q-card-section>
-        <div style="word-wrap: break-word;"  v-if="invoice">
+        <div style="word-wrap: break-word" v-if="invoice">
           <strong>Invoice:</strong>{% raw %} {{ invoice }}{% endraw %}
           <!-- invoice data only content -->
           <div v-if="invoiceData.length > 0" v-html="invoiceData"></div>
         </div>
-        <div style="word-wrap: break-word;" v-if="lnurl">
+        <div style="word-wrap: break-word" v-if="lnurl">
           <strong>LNURL:</strong>{% raw %} {{ lnurl }}{% endraw %}
-          <!-- lnurl only content -->                    
+          <!-- lnurl only content -->
           <div v-if="lnurlData.length > 0" v-html="lnurlData"></div>
         </div>
-        <div style="word-wrap: break-word;" v-if="lnaddress">
-          <strong>Lightning Address:</strong>{% raw %} {{ lnaddress }}{% endraw %}
+        <div style="word-wrap: break-word" v-if="lnaddress">
+          <strong>Lightning Address:</strong>{% raw %} {{ lnaddress }}{% endraw
+          %}
           <!-- ln address data only content -->
-          <div v-if="Object.keys(lnaddressData).length > 0" v-html="lnaddressData"></div>
+          <div
+            v-if="Object.keys(lnaddressData).length > 0"
+            v-html="lnaddressData"
+          ></div>
         </div>
       </q-card-section>
     </q-card>
@@ -61,13 +65,10 @@
       </q-card-section>
       <q-card-section class="q-pa-none">
         <q-separator></q-separator>
-        <q-list>
-          {% include "decoder/_decoder.html" %}
-        </q-list>
+        <q-list> {% include "decoder/_decoder.html" %} </q-list>
       </q-card-section>
     </q-card>
   </div>
-
 </div>
 {% endblock %} {% block scripts %} {{ window_vars(user) }}
 
@@ -76,39 +77,38 @@
     el: '#vue',
     mixins: [windowMixin],
     computed: {
-      endpoint: function() {
+      endpoint: function () {
         return `/decoder/api/v1/settings?usr=${this.g.user.id}`
       }
-    },  
+    },
     data: function () {
       return {
         input: '',
         invoice: '',
         decoderData: '',
-        lnurl: '', 
+        lnurl: '',
         lnurlData: '',
         lnaddress: '',
         lnaddressData: '',
-        invoiceData: '',
-        };
+        invoiceData: ''
+      }
     },
-    mounted() {
-    },
+    mounted() {},
     methods: {
-      blankallFields:  function() {
-        this.invoice = '',
-        this.invoiceData = '',
-        this.lnurl = '', 
-        this.lnurlData = '',
-        this.lnaddress = '',
-        this.lnaddressData = ''
+      blankallFields: function () {
+        ;(this.invoice = ''),
+          (this.invoiceData = ''),
+          (this.lnurl = ''),
+          (this.lnurlData = ''),
+          (this.lnaddress = ''),
+          (this.lnaddressData = '')
       },
-      sendFormData() { 
+      sendFormData() {
         // check if its a ln address first
         let url = this.isValidLNaddress(this.input)
         // console.log("isValidLNaddress: ", url)
 
-        if (url !='invalid') { 
+        if (url != 'invalid') {
           this.lnaddress = this.input
           this.invoice = ''
           this.invoiceData = ''
@@ -117,78 +117,79 @@
           this.decoderData = ''
 
           this.getLNAddressData(url)
-
-        } else {  // try lnurl or bolt11 invoice
-          var info = this.decoderFunction({"data": this.input})
+        } else {
+          // try lnurl or bolt11 invoice
+          var info = this.decoderFunction({data: this.input})
         }
       },
-     isValidLNaddress: function(address) {
+      isValidLNaddress: function (address) {
         // Use Regular expression for email validation for LN address
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        let isValid =  emailRegex.test(address);
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        let isValid = emailRegex.test(address)
 
         if (isValid) {
-          //console.log('LN address is valid');        
-          const [name, domain] = address.split('@');
-          const url = `https://${domain}/.well-known/lnurlp/${name}`;
-          return url;  
+          //console.log('LN address is valid');
+          const [name, domain] = address.split('@')
+          const url = `https://${domain}/.well-known/lnurlp/${name}`
+          return url
         } else {
           //console.log('Input is not a LN address');
           return 'invalid'
         }
       },
-      getResponseData: async function(url) { 
+      getResponseData: async function (url) {
         try {
-            const response = await fetch(url)
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            } 
-            const data = await response.json()
-            return data
-          
-          } catch (error){
-            console.error('There was a problem with the fetch operation:', error);
-          }        
-      },
-      formatJSONToHTML: async function(jsonData) {
-       // console.log("inside formatJSONToHTML")
-       // console.log(jsonData)
-        let html = '<ul>';
-        for (const key in jsonData) {
-            html += `<li style="word-wrap: break-word;"><strong>${key}</strong> : `;
-            if (typeof jsonData[key] === 'object') {
-                html += await this.formatJSONToHTML(jsonData[key]);          
-            } else { 
-              html += jsonData[key];
-            }
-            html += '</li>';          
+          const response = await fetch(url)
+          if (!response.ok) {
+            throw new Error('Network response was not ok')
+          }
+          const data = await response.json()
+          return data
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error)
         }
-        html += '</ul>';
-        // console.log("format json to html: ", html)
-        return html;
       },
-      getLNURLData: async function(data) { 
+      formatJSONToHTML: async function (jsonData) {
+        // console.log("inside formatJSONToHTML")
+        // console.log(jsonData)
+        let html = '<ul>'
+        for (const key in jsonData) {
+          html += `<li style="word-wrap: break-word;"><strong>${key}</strong> : `
+          if (typeof jsonData[key] === 'object') {
+            html += await this.formatJSONToHTML(jsonData[key])
+          } else {
+            html += jsonData[key]
+          }
+          html += '</li>'
+        }
+        html += '</ul>'
+        // console.log("format json to html: ", html)
+        return html
+      },
+      getLNURLData: async function (data) {
         let response = await this.getResponseData(data)
         // console.log("getLNURLData: ", response)
         this.lnurlData = await this.formatJSONToHTML(response)
       },
-      getLNAddressData: async function(data)  {
+      getLNAddressData: async function (data) {
         let response = await this.getResponseData(data)
         // console.log("getLNAddressData: ", response)
         if (response === undefined) {
-          return this.lnaddressData = await this.formatJSONToHTML({"error": "Lightning address not valid"})
+          return (this.lnaddressData = await this.formatJSONToHTML({
+            error: 'Lightning address not valid'
+          }))
         }
         this.lnaddressData = await this.formatJSONToHTML(response)
       },
-      getInvoiceData: async function(data) { 
+      getInvoiceData: async function (data) {
         this.invoiceData = await this.formatJSONToHTML(data)
         //console.log("getInvoiceData: ", this.invoiceData)
       },
       decoderFunction: async function (data) {
         LNbits.api
           .request(
-            'POST', 
-            '/api/v1/payments/decode' , 
+            'POST',
+            '/api/v1/payments/decode',
             this.g.user.wallets[0].inkey,
             data
           )
@@ -198,25 +199,25 @@
 
             this.blankallFields()
 
-            if (this.decoderData.hasOwnProperty("domain")) {
+            if (this.decoderData.hasOwnProperty('domain')) {
               // Handle LNURL
               // console.log("Key 'domain' exists! Is probably a lnurl");
               this.lnurl = this.input
-              let url  = this.decoderData["domain"]
+              let url = this.decoderData['domain']
               this.getLNURLData(url)
-          } else { 
+            } else {
               // Handle Invoice
               this.invoice = this.input
               this.getInvoiceData(response.data)
-            } 
+            }
           })
           .catch(error => {
-            LNbits.utils.notifyApiError(error) 
+            LNbits.utils.notifyApiError(error)
           })
-      }, 
-      isObject(val) {
-        return val !== null && typeof val === 'object' && !Array.isArray(val);
       },
+      isObject(val) {
+        return val !== null && typeof val === 'object' && !Array.isArray(val)
+      }
     },
     ///// To run on startup /////
     created: function () {

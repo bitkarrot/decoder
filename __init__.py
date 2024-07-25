@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from lnbits.db import Database
+
 from .views import decoder_generic_router
 
 db = Database("ext_decoder")
