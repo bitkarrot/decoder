@@ -1,40 +1,47 @@
 all: format check
 
-format: prettier isort black
+format: prettier black ruff
 
-check: pyright pylint flake8 checkisort checkblack checkprettier
+check: mypy pyright checkblack checkruff checkprettier
 
 prettier:
-	poetry run ./node_modules/.bin/prettier --write config.json manifest.json static templates
-
+	poetry run ./node_modules/.bin/prettier --write .
 pyright:
 	poetry run ./node_modules/.bin/pyright
+
+mypy:
+	poetry run mypy .
 
 black:
 	poetry run black .
 
-flake8:
-	poetry run flake8
+ruff:
+	poetry run ruff check . --fix
 
-mypy:
-	poetry run mypy
-
-isort:
-	poetry run isort .
-
-pylint:
-	poetry run pylint *.py
+checkruff:
+	poetry run ruff check .
 
 checkprettier:
-	poetry run ./node_modules/.bin/prettier --check config.json manifest.json static templates
+	poetry run ./node_modules/.bin/prettier --check .
 
 checkblack:
 	poetry run black --check .
 
-checkisort:
-	poetry run isort --check-only .
+checkeditorconfig:
+	editorconfig-checker
 
 test:
 	PYTHONUNBUFFERED=1 \
 	DEBUG=true \
 	poetry run pytest
+install-pre-commit-hook:
+	@echo "Installing pre-commit hook to git"
+	@echo "Uninstall the hook with poetry run pre-commit uninstall"
+	poetry run pre-commit install
+
+pre-commit:
+	poetry run pre-commit run --all-files
+
+
+checkbundle:
+	@echo "skipping checkbundle"
