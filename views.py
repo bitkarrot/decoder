@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
+from starlette.responses import HTMLResponse
+
 from lnbits.core.models import User
 from lnbits.decorators import check_user_exists
 from lnbits.helpers import template_renderer
-from starlette.responses import HTMLResponse
 
 templates = Jinja2Templates(directory="templates")
 
@@ -21,5 +22,5 @@ async def index(
     user: User = Depends(check_user_exists),
 ):
     return decoder_renderer().TemplateResponse(
-        "decoder/index.html", {"request": request, "user": user.dict()}
+        "decoder/index.html", {"request": request, "user": user.json()}
     )
