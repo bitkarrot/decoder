@@ -2,8 +2,6 @@
   "name": "Decoder",
   "short_description": "Decode BOLT11, LNURL, and Lightning Address",
   "tile": "/decoder/static/unlock.png",
-  "contributors": [
-    "bitkarrot"
-  ],
+  "contributors": ["bitkarrot"],
   "min_lnbits_version": "1.0.0"
 }
