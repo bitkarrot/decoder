@@ -21,5 +21,5 @@ async def index(
     user: User = Depends(check_user_exists),
 ):
     return decoder_renderer().TemplateResponse(
-        "decoder/index.html", {"request": request, "user": user.dict()}
+        "decoder/index.html", {"request": request, "user": user.json()}
     )

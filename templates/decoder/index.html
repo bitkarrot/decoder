@@ -73,7 +73,7 @@
 {% endblock %} {% block scripts %} {{ window_vars(user) }}
 
 <script>
-  new Vue({
+  window.app = Vue.createApp({
     el: '#vue',
     mixins: [windowMixin],
     computed: {
@@ -218,10 +218,6 @@
       isObject(val) {
         return val !== null && typeof val === 'object' && !Array.isArray(val)
       }
-    },
-    ///// To run on startup /////
-    created: function () {
-      self = this
     }
   })
 </script>

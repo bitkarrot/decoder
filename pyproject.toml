@@ -6,7 +6,7 @@ authors = ["Bitkarrot <info@bitkarrot.co>"]
 
 [tool.poetry.dependencies]
 python = "^3.10 | ^3.9"
-lnbits = "*"
+lnbits = {version = "*", allow-prereleases = true}
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
