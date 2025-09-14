@@ -14,3 +14,8 @@ decoder_static_files = [
         "name": "decoder_static",
     }
 ]
+
+__all__ = [
+    "db",
+    "decoder_static_files",
+]
