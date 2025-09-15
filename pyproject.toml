@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "lnbits-decoder"
-version = "0.0.1"
+version = "0.0.2"
 description = "LNbits decoder extension"
-authors = ["Bitkarrot <info@bitkarrot.co>"]
+authors = ["Bitkarrot <lnbits@bitkarrot.co>"]
 
 [tool.poetry.dependencies]
-python = "^3.10 | ^3.9"
+python = ">=3.10,<3.13"
 lnbits = {version = "*", allow-prereleases = true}
 
 [tool.poetry.group.dev.dependencies]
