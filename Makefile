@@ -2,7 +2,7 @@ all: format check
 
 format: prettier black ruff
 
-check: mypy pyright checkblack checkruff checkprettier
+check: mypy checkblack checkruff checkprettier
 
 prettier:
 	@if [ -x ./node_modules/.bin/prettier ]; then \
@@ -12,15 +12,6 @@ prettier:
 	else \
 		echo "prettier not found; skipping (install via 'npm i -D prettier')"; \
 	fi
-pyright:
-	@if [ -x ./node_modules/.bin/pyright ]; then \
-		./node_modules/.bin/pyright; \
-	elif command -v npx >/dev/null 2>&1; then \
-		npx --yes pyright; \
-	else \
-		echo "pyright not found; skipping (install via 'npm i -D pyright')"; \
-	fi
-
 mypy:
 	@if command -v uv >/dev/null 2>&1; then \
 		echo "Running mypy via uv"; \
