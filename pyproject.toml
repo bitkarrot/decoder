@@ -1,3 +1,22 @@
+[project]
+name = "decoder"
+version = "0.0.2"
+requires-python = ">=3.10,<3.13"
+description = "Decode lnurls."
+authors = [{name = "Bitkarrot", email = "info@bitkarrot.co"}]
+
+dependencies = [ "lnbits>1" ]
+
+[tool.uv]
+dev-dependencies = [
+    "black",
+    "pytest-asyncio",
+    "pytest",
+    "mypy",
+    "pre-commit",
+    "ruff",
+]
+
 [tool.poetry]
 name = "lnbits-decoder"
 version = "0.0.2"
@@ -8,17 +27,15 @@ authors = ["Bitkarrot <lnbits@bitkarrot.co>"]
 python = ">=3.10,<3.13"
 lnbits = {version = "*", allow-prereleases = true}
 
-[tool.poetry.group.dev.dependencies]
-black = "^24.3.0"
-pytest-asyncio = "^0.21.0"
-pytest = "^7.3.2"
-mypy = "^1.5.1"
-pre-commit = "^3.2.2"
-ruff = "^0.3.2"
+[tool.mypy]
+exclude = "(nostr/*)"
+plugins = ["pydantic.mypy"]
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
 
 [[tool.mypy.overrides]]
 module = [
@@ -45,6 +62,9 @@ line-length = 88
 [tool.ruff]
 # Same as Black. + 10% rule of black
 line-length = 88
+exclude = [
+    "nostr",
+]
 
 [tool.ruff.lint]
 # Enable:
@@ -59,9 +79,7 @@ line-length = 88
 # RUF - ruff
 # B - bugbear
 select = ["F", "E", "W", "I", "A", "C", "N", "UP", "RUF", "B"]
-# UP007: pyupgrade: use X | Y instead of Optional. (python3.10)
-# C901 `api_link_create_or_update` is too complex (15 > 10)
-ignore = ["UP007", "C901"]
+ignore = ["C901"]
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
@@ -73,6 +91,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 # needed for pydantic
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = [
+    "validator",
     "root_validator",
 ]
 
