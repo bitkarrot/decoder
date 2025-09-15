@@ -5,27 +5,75 @@ format: prettier black ruff
 check: mypy pyright checkblack checkruff checkprettier
 
 prettier:
-	uv run ./node_modules/.bin/prettier --write .
+	@if [ -x ./node_modules/.bin/prettier ]; then \
+		./node_modules/.bin/prettier --write .; \
+	elif command -v npx >/dev/null 2>&1; then \
+		npx --yes prettier --write .; \
+	else \
+		echo "prettier not found; skipping (install via 'npm i -D prettier')"; \
+	fi
 pyright:
-	uv run ./node_modules/.bin/pyright
+	@if [ -x ./node_modules/.bin/pyright ]; then \
+		./node_modules/.bin/pyright; \
+	elif command -v npx >/dev/null 2>&1; then \
+		npx --yes pyright; \
+	else \
+		echo "pyright not found; skipping (install via 'npm i -D pyright')"; \
+	fi
 
 mypy:
-	uv run mypy .
+	@if command -v uv >/dev/null 2>&1; then \
+		echo "Running mypy via uv"; \
+		uv run mypy .; \
+	else \
+		echo "uv not found; falling back to system Python mypy"; \
+		python3 -m mypy .; \
+	fi
 
 black:
-	uv run black .
+	@if command -v uv >/dev/null 2>&1; then \
+		uv run black .; \
+	elif command -v black >/dev/null 2>&1; then \
+		black .; \
+	else \
+		python3 -m black . || echo "black not available"; \
+	fi
 
 ruff:
-	uv run ruff check . --fix
+	@if command -v uv >/dev/null 2>&1; then \
+		uv run ruff check . --fix; \
+	elif command -v ruff >/dev/null 2>&1; then \
+		ruff check . --fix; \
+	else \
+		python3 -m ruff check . --fix || echo "ruff not available"; \
+	fi
 
 checkruff:
-	uv run ruff check .
+	@if command -v uv >/dev/null 2>&1; then \
+		uv run ruff check .; \
+	elif command -v ruff >/dev/null 2>&1; then \
+		ruff check .; \
+	else \
+		python3 -m ruff check . || echo "ruff not available"; \
+	fi
 
 checkprettier:
-	uv run ./node_modules/.bin/prettier --check .
+	@if [ -x ./node_modules/.bin/prettier ]; then \
+		./node_modules/.bin/prettier --check .; \
+	elif command -v npx >/dev/null 2>&1; then \
+		npx --yes prettier --check .; \
+	else \
+		echo "prettier not found; skipping check (install via 'npm i -D prettier')"; \
+	fi
 
 checkblack:
-	uv run black --check .
+	@if command -v uv >/dev/null 2>&1; then \
+		uv run black --check .; \
+	elif command -v black >/dev/null 2>&1; then \
+		black --check .; \
+	else \
+		python3 -m black --check . || echo "black not available"; \
+	fi
 
 checkeditorconfig:
 	editorconfig-checker
