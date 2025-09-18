@@ -1,8 +1,11 @@
 all: format check
 
-format: prettier black ruff
+format: prettier black ruff pyright
 
 check: mypy checkblack checkruff checkprettier
+
+pyright:
+	uv run ./node_modules/.bin/pyright
 
 prettier:
 	@if [ -x ./node_modules/.bin/prettier ]; then \

@@ -12,7 +12,7 @@ dev-dependencies = [
     "black",
     "pytest-asyncio",
     "pytest",
-    "mypy==1.10.0",
+    "mypy==1.17.1",
     "pre-commit",
     "ruff",
 ]
@@ -22,6 +22,7 @@ name = "lnbits-decoder"
 version = "0.0.2"
 description = "LNbits decoder extension"
 authors = ["Bitkarrot <lnbits@bitkarrot.co>"]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
