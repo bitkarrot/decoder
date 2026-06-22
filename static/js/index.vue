@@ -56,9 +56,7 @@
     <div class="col-12 col-md-5 q-gutter-y-md">
       <q-card>
         <q-card-section>
-          <h6 class="text-subtitle1 q-my-none">
-            Decoder extension
-          </h6>
+          <h6 class="text-subtitle1 q-my-none">Decoder extension</h6>
         </q-card-section>
         <q-card-section class="q-pa-none">
           <q-separator></q-separator>
@@ -67,9 +65,10 @@
               <q-card-section>
                 <p><b>Decoder Extension</b><br /></p>
                 <p>
-                  Decoder is a simple BOLT11, LNURL, and Lightning Address decoder for
-                  Lightning. Paste in your invoice or LNURL to decode. Useful for testing
-                  and debugging while developing applications on the lightning network.
+                  Decoder is a simple BOLT11, LNURL, and Lightning Address
+                  decoder for Lightning. Paste in your invoice or LNURL to
+                  decode. Useful for testing and debugging while developing
+                  applications on the lightning network.
                 </p>
                 <small
                   >Created by
