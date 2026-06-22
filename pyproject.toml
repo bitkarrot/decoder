@@ -1,6 +1,6 @@
 [project]
 name = "decoder"
-version = "1.1.1"
+version = "1.1.2"
 requires-python = ">=3.10,<3.13"
 description = "Decode lnurls."
 authors = [{name = "Bitkarrot", email = "info@bitkarrot.co"}]
@@ -19,7 +19,7 @@ dev = [
 
 [tool.poetry]
 name = "lnbits-decoder"
-version = "1.1.1"
+version = "1.1.2"
 description = "LNbits decoder extension"
 authors = ["Bitkarrot <lnbits@bitkarrot.co>"]
 package-mode = false
