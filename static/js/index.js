@@ -9,8 +9,12 @@ window.PageDecoder = {
       lnurlData: '',
       lnaddress: '',
       lnaddressData: '',
-      invoiceData: ''
+      invoiceData: '',
+      version: ''
     }
+  },
+  mounted() {
+    this.getVersion()
   },
   methods: {
     blankallFields() {
@@ -22,7 +26,11 @@ window.PageDecoder = {
       this.lnaddressData = ''
     },
     sendFormData() {
-      let url = this.isValidLNaddress(this.input)
+      let input = this.input
+      if (input.toLowerCase().startsWith('lightning:')) {
+        input = input.slice(10)
+      }
+      let url = this.isValidLNaddress(input)
       if (url != 'invalid') {
         this.lnaddress = this.input
         this.invoice = ''
@@ -32,7 +40,7 @@ window.PageDecoder = {
         this.decoderData = ''
         this.getLNAddressData(url)
       } else {
-        this.decoderFunction({data: this.input})
+        this.decoderFunction({data: input})
       }
     },
     isValidLNaddress(address) {
@@ -110,11 +118,30 @@ window.PageDecoder = {
           }
         })
         .catch(error => {
+          if (error.response && error.response.data) {
+            if (typeof error.response.data === 'string') {
+              error.response.data = { detail: error.response.data }
+            } else if (error.response.data.message && !error.response.data.detail) {
+              error.response.data = { detail: error.response.data.message }
+            }
+          }
           LNbits.utils.notifyApiError(error)
         })
     },
     isObject(val) {
       return val !== null && typeof val === 'object' && !Array.isArray(val)
+    },
+    async getVersion() {
+      try {
+        const response = await fetch('/decoder/api/v1/version')
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+        const data = await response.json()
+        this.version = data.version
+      } catch (error) {
+        console.error('Failed to fetch decoder version:', error)
+      }
     }
   }
 }

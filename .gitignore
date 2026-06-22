@@ -3,3 +3,4 @@ node_modules
 .mypy_cache
 .venv
 .DS_Store
+data/
