@@ -60,4 +60,4 @@ async def test_lightning_prefix_is_stripped():
 
 @pytest.mark.asyncio
 async def test_version_loaded_from_config():
-    assert _load_version() == "1.1.2"
+    assert _load_version() == "1.1.3"

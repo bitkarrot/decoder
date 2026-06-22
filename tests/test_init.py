@@ -21,4 +21,4 @@ async def test_version_endpoint():
         response = await client.get("/decoder/api/v1/version")
     assert response.status_code == 200
     assert response.json() == {"version": __version__}
-    assert __version__ == "1.1.2"
+    assert __version__ == "1.1.3"

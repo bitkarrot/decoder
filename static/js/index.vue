@@ -63,7 +63,10 @@
           <q-list>
             <q-card>
               <q-card-section>
-                <p><b>Decoder Extension v{{ version }}</b><br /></p>
+                <p>
+                  <b>Decoder Extension v{{ version }}</b
+                  ><br />
+                </p>
                 <p>
                   Decoder is a simple BOLT11, LNURL, and Lightning Address
                   decoder for Lightning. Paste in your invoice or LNURL to

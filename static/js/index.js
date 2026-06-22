@@ -120,9 +120,12 @@ window.PageDecoder = {
         .catch(error => {
           if (error.response && error.response.data) {
             if (typeof error.response.data === 'string') {
-              error.response.data = { detail: error.response.data }
-            } else if (error.response.data.message && !error.response.data.detail) {
-              error.response.data = { detail: error.response.data.message }
+              error.response.data = {detail: error.response.data}
+            } else if (
+              error.response.data.message &&
+              !error.response.data.detail
+            ) {
+              error.response.data = {detail: error.response.data.message}
             }
           }
           LNbits.utils.notifyApiError(error)
