@@ -1,22 +1,12 @@
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse
-from lnbits.core.models import User
-from lnbits.decorators import check_user_exists
-from lnbits.helpers import template_renderer
-
-
-def decoder_renderer():
-    return template_renderer(["decoder/templates"])
-
+from fastapi import APIRouter, Depends
+from lnbits.core.views.generic import index
+from lnbits.decorators import check_account_id_exists
 
 decoder_generic_router: APIRouter = APIRouter()
 
-
-@decoder_generic_router.get("/", response_class=HTMLResponse)
-async def index(
-    request: Request,
-    user: User = Depends(check_user_exists),
-):
-    return decoder_renderer().TemplateResponse(
-        "decoder/index.html", {"request": request, "user": user.json()}
-    )
+decoder_generic_router.add_api_route(
+    "/",
+    methods=["GET"],
+    endpoint=index,
+    dependencies=[Depends(check_account_id_exists)],
+)
