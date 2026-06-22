@@ -17,5 +17,6 @@ decoder_static_files = [
 
 __all__ = [
     "db",
+    "decoder_ext",
     "decoder_static_files",
 ]

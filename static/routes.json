@@ -1,0 +1,8 @@
+[
+  {
+    "path": "/decoder/",
+    "name": "PageDecoder",
+    "template": "/decoder/static/js/index.vue",
+    "component": "/decoder/static/js/index.js"
+  }
+]
