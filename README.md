@@ -32,9 +32,8 @@ Add the above link to LNBits on the Admin Panel by Visiting: Manage Server -> Se
 
 ## Get Started
 
-Mininum poetry version has is ^1.2, but it is recommended to use latest poetry. (including OSX)
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
 
 ```sh
-poetry env use python3.9
-poetry install --only main
+uv sync
 ```
