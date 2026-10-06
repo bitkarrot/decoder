@@ -5,14 +5,14 @@ requires-python = ">=3.10,<3.13"
 description = "Decode lnurls."
 authors = [{name = "Bitkarrot", email = "info@bitkarrot.co"}]
 
-dependencies = [ "lnbits>=1.5.0", "pillow (>=12.3.0)", "aiohttp (>=3.14.3)", "cryptography (>=50.0.0)", "protobuf (>=6.33.5)" ]
+dependencies = [ "lnbits>=1.5.0", "pillow (>=12.3.0)", "aiohttp (>=3.14.3)", "cryptography>=50.0.2", "protobuf (>=6.33.5)" ]
 
 [dependency-groups]
 dev = [
     "black",
     "pytest-asyncio",
     "pytest",
-    "mypy==2.3.1",
+    "mypy==2.4.0",
     "pre-commit",
     "ruff",
 ]
