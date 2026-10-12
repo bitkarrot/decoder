@@ -10,9 +10,12 @@ updates:
         patterns:
           - '*'
     ignore:
-      # lnbits requires protobuf <6.34, so 7.x can never resolve
+      # lnbits pins these below the available latest releases, so updates
+      # at or beyond these ceilings can never resolve
       - dependency-name: 'protobuf'
-        versions: ['>=7.0.0']
+        versions: ['>=6.34.0']
+      - dependency-name: 'pyjwt'
+        versions: ['>=2.13.0']
 
   - package-ecosystem: 'npm'
     directory: '/'
