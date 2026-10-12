@@ -1,9 +1,14 @@
+import json
+from pathlib import Path
+
 import httpx
 import pytest
 from bolt11 import decode as bolt11_decode
 from lnurl import Lnurl, url_decode
 
 from ..views import _load_version
+
+CONFIG = json.loads((Path(__file__).parent.parent / "config.json").read_text())
 
 SAMPLE_INVOICE = (
     "LNBC2220N1P4RNXA9PP587AZAHDX7PHQ9LHVY8HWZZ9C7WK3MW2LVXKJ8AMKE3AHVTXEVLESS"
@@ -60,4 +65,4 @@ async def test_lightning_prefix_is_stripped():
 
 @pytest.mark.asyncio
 async def test_version_loaded_from_config():
-    assert _load_version() == "1.1.3"
+    assert _load_version() == CONFIG["version"]

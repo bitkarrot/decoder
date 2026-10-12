@@ -1,9 +1,14 @@
+import json
+from pathlib import Path
+
 import pytest
 from fastapi import APIRouter, FastAPI
 from httpx import AsyncClient
 
 from .. import decoder_ext
 from ..views import __version__
+
+CONFIG = json.loads((Path(__file__).parent.parent / "config.json").read_text())
 
 
 # just import router and add it to a test router
@@ -21,4 +26,4 @@ async def test_version_endpoint():
         response = await client.get("/decoder/api/v1/version")
     assert response.status_code == 200
     assert response.json() == {"version": __version__}
-    assert __version__ == "1.1.3"
+    assert __version__ == CONFIG["version"]
