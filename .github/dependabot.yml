@@ -9,6 +9,10 @@ updates:
       dependencies:
         patterns:
           - '*'
+    ignore:
+      # lnbits requires protobuf <6.34, so 7.x can never resolve
+      - dependency-name: 'protobuf'
+        versions: ['>=7.0.0']
 
   - package-ecosystem: 'npm'
     directory: '/'
