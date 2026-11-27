@@ -10,10 +10,12 @@ dependencies = [ "lnbits>=1.5.0", "pillow (>=12.3.0)", "aiohttp (>=3.14.4)", "cr
 # lnbits pins pillow (~=12.3.0) and packaging (~=25.0.0) to ranges that only
 # contain versions with open CVEs (pillow fixed in 13.0.0; virtualenv>=21.14.9
 # needs packaging>=26.3). bitstring 5.x removed ConstBitStream, which breaks
-# bolt11 2.1.x (pinned by lnbits) at import time, so it is capped below 5. These overrides only affect the dev/test lock
+# bolt11 2.1.x (pinned by lnbits) at import time, so it is capped below 5.
+# coincurve 20.0.0 (pinned by the bolt11/bip32 chain) has no cp313 wheels and
+# its sdist no longer builds with current scikit-build-core; 21.x ships wheels. These overrides only affect the dev/test lock
 # environment; production deployments use whatever versions lnbits provides.
 [tool.uv]
-override-dependencies = ["pillow>=13.0.0", "packaging>=26.3", "virtualenv>=21.14.9", "bitstring<5.0.0"]
+override-dependencies = ["pillow>=13.0.0", "packaging>=26.3", "virtualenv>=21.14.9", "bitstring<5.0.0", "coincurve>=21.0.0"]
 
 [dependency-groups]
 dev = [
