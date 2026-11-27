@@ -1,7 +1,7 @@
 [project]
 name = "decoder"
-version = "1.1.9"
-requires-python = ">=3.11,<3.13"
+version = "1.1.10"
+requires-python = ">=3.11,<3.14"
 description = "Decode lnurls."
 authors = [{name = "Bitkarrot", email = "info@bitkarrot.co"}]
 
